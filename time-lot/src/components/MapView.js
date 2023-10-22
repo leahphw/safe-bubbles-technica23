@@ -1,4 +1,5 @@
-import { useState, useMemo, useEffect } from "react";
+import { useState, useEffect } from "react";
+import { useUserContext } from "./UserContext";
 import { GoogleMap, useLoadScript, Marker, InfoWindow } from "@react-google-maps/api";
 import usePlacesAutocomplete, {
     getGeocode,
@@ -13,38 +14,35 @@ import {
 } from "@reach/combobox";
 import "@reach/combobox/styles.css";
 
+const libraries = ["places"];
+
 export default function MapView() {
+    const { userProfiles } = useUserContext();
     const [map, setMap] = useState(null);
     const [center, setCenter] = useState({ lat: 43.45, lng: -80.49 });
     const [selected, setSelected] = useState(null);
     const [zoom, setZoom] = useState(10);
-    const [markerPositions, setMarkerPositions] = useState([]); // Store marker positions
-    const [userProfiles, setUserProfiles] = useState([]); // Store user data
+    const [markerPositions, setMarkerPositions] = useState([]);
     const [selectedProfile, setSelectedProfile] = useState(null);
 
     const { isLoaded, loadError } = useLoadScript({
         googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
-        libraries: ["places"],
+        libraries,
     });
 
-    // Function to receive user data from UserProfile component
-    const receiveUserData = (userData) => {
-        // Add the user data to the list of user profiles
-        setUserProfiles([...userProfiles, userData]);
-        setSelectedProfile(userData);
+    const handleMapLoad = (map) => {
+        setMap(map);
     };
 
     useEffect(() => {
-        if (!isLoaded) return;
-
-        if (window.google && map) {
+        if (map) {
             const latlngbounds = new window.google.maps.LatLngBounds();
             markerPositions.forEach((position) => {
                 latlngbounds.extend(position);
             });
             map.fitBounds(latlngbounds);
         }
-    }, [isLoaded, map, markerPositions]);
+    }, [map, markerPositions]);
 
     const PlacesAutocomplete = ({ setSelected }) => {
         const {
@@ -60,9 +58,7 @@ export default function MapView() {
             const { lat, lng } = await getLatLng(results[0]);
             setSelected({ lat, lng });
 
-            // Add the selected location to markerPositions
             setMarkerPositions([...markerPositions, { lat, lng }]);
-            // Trigger a re-render to update the map with the new marker
             setCenter({ lat, lng });
             setZoom(15);
         };
@@ -75,6 +71,17 @@ export default function MapView() {
                     disabled={!ready}
                     className="combobox-input"
                     placeholder="Search an address"
+                    style={{
+                        backgroundColor: '#3498db',
+                        color: '#fff',
+                        padding: '10px 20px',
+                        border: 'none',
+                        borderRadius: '5px',
+                        cursor: 'pointer',
+                        fontFamily: 'Space Mono, monospace',
+                        fontWeight: 700,
+                        marginBottom: '10px',
+                      }}
                 />
                 <ComboboxPopover>
                     <ComboboxList>
@@ -94,46 +101,49 @@ export default function MapView() {
                 <PlacesAutocomplete setSelected={setSelected} />
             </div>
 
-            <GoogleMap
-                zoom={zoom}
-                center={center}
-                mapContainerStyle={{ height: "400px", width: "100%" }}
-                mapContainerClassName="map-container"
-            >
-                {markerPositions.map((position, index) => (
-                    <Marker
-                        key={index}
-                        position={position}
-                        icon={{
-                            url: "../../assets/img/carz.png",
-                            anchor: new window.google.maps.Point(10, 10),
-                            scaledSize: new window.google.maps.Size(20, 20)
-                        }}
-                    />
-                ))}
+            {isLoaded ? (
+                <GoogleMap
+                    zoom={zoom}
+                    center={center}
+                    mapContainerStyle={{ height: "400px", width: "100%" }}
+                    mapContainerClassName="map-container"
+                    onLoad={handleMapLoad}
+                >
+                    {markerPositions.map((position, index) => (
+                        <Marker
+                            key={index}
+                            position={position}
+                            icon={{
+                                url: "../../assets/img/carz.png",
+                                anchor: { x: 10, y: 10 },
+                                scaledSize: { width: 20, height: 20 }
+                            }}
+                        />
+                    ))}
 
-                {userProfiles.map((profile, index) => (
-                    <Marker
-                        key={index}
-                        position={{ lat: profile.lat, lng: profile.lng }}
-                        onClick={() => setSelected(profile)}
-                    />
-                ))}
+                    {userProfiles.map((profile, index) => (
+                        <Marker
+                            key={index}
+                            position={{ lat: profile.lat, lng: profile.lng }}
+                            onClick={() => setSelected(profile)}
+                        />
+                    ))}
 
-                {selected && (
-                    <InfoWindow
-                        position={{ lat: selected.lat, lng: selected.lng }}
-                        onCloseClick={() => setSelected(null)}
-                    >
-                        <div>
-                            <h2>{selected.username}</h2>
-                            <p>First Name: {selected.firstName}</p>
-                            <p>Last Name: {selected.lastName}</p>
-                            {/* Display assistanceOffered details here */}
-                        </div>
-                    </InfoWindow>
-                )}
-            </GoogleMap>
+                    {selected && (
+                        <InfoWindow
+                            position={{ lat: selected.lat, lng: selected.lng }}
+                            onCloseClick={() => setSelected(null)}
+                        >
+                            <div>
+                                <h2>{selected.username}</h2>
+                                <p>First Name: {selected.firstName}</p>
+                                <p>Last Name: {selected.lastName}</p>
+                                {/* Display assistanceOffered details here */}
+                            </div>
+                        </InfoWindow>
+                    )}
+                </GoogleMap>
+            ) : null}
         </>
     );
 }

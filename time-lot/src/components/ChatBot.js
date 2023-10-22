@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import Axios from 'axios';
 
-const apiKey = process.env.REACT_APP_GPT3_API_KEY;
+const apiKey = "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";
 
 const axiosInstance = Axios.create({
   baseURL: 'https://api.openai.com/v1',
@@ -36,16 +36,21 @@ function Chatbot() {
   async function sendToChatbot(userInput) {
     try {
       const response = await axiosInstance.post('/completions', {
+        model: 'text-davinci-002', // Specify the model you want to use
         prompt: userInput,
         max_tokens: 50,
       });
   
-      console.log('GPT-3 Response:', response.data);
-  
       if (response.status === 200) {
         return response.data.choices[0].text;
+      } else if (response.status === 429) {
+        // Handle rate limiting by retrying the request after a delay
+        const retryAfter = parseInt(response.headers['retry-after']) * 1000; // Convert to milliseconds
+        await new Promise((resolve) => setTimeout(resolve, retryAfter));
+        return sendToChatbot(userInput); // Retry the request
       } else {
         console.error('Error: Request failed with status code ' + response.status);
+        console.error('Response data:', response.data);
         return 'An error occurred while processing your request.';
       }
     } catch (error) {
@@ -53,7 +58,6 @@ function Chatbot() {
       return 'An error occurred while processing your request.';
     }
   }
-  
   
 
   return (
@@ -73,8 +77,35 @@ function Chatbot() {
         placeholder="Type your message..."
         value={userInput}
         onChange={handleUserInput}
+        style={{
+          backgroundColor: '#3498db',
+          color: '#fff',
+          padding: '10px 20px',
+          border: 'none',
+          borderRadius: '5px',
+          cursor: 'pointer',
+          fontFamily: 'Space Mono, monospace',
+          fontWeight: 700,
+          marginRight: '10px',
+          marginTop: '10px',
+        }}
       />
-      <button onClick={handleSendMessage}>Send</button>
+      <button
+        onClick={handleSendMessage}
+        style={{
+          backgroundColor: '#3498db',
+          color: '#fff',
+          padding: '10px 20px',
+          border: 'none',
+          borderRadius: '5px',
+          cursor: 'pointer',
+          fontFamily: 'Space Mono, monospace',
+          fontWeight: 700,
+          marginBottom: '10px',
+        }}
+      >
+        Send
+      </button>
     </div>
   );
 }

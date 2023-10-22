@@ -1,57 +1,153 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
+import { useUserContext } from './UserContext';
 
-class UserProfile extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      firstName: '',
-      lastName: '',
-      username: '',
-      assistanceOffered: {
-        food: false,
-        water: false,
-        shelter: false,
-        transportation: false,
-        medicalAid: false,
-      },
-    };
-  }
+function UserProfile() {
+  const [state, setState] = useState({
+    firstName: '',
+    lastName: '',
+    username: '',
+    assistanceOffered: {
+      food: false,
+      water: false,
+      shelter: false,
+      transportation: false,
+      medicalAid: false,
+    },
+  });
 
-  handleInputChange = (e) => {
+  const { addUserProfile } = useUserContext();
+
+  const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
-    this.setState((prevState) => ({
+    setState((prevState) => ({
+      ...prevState,
       [name]: type === 'checkbox' ? { ...prevState[name], [value]: checked } : value,
     }));
   };
 
-  handleProfileSubmit = () => {
-    const { firstName, lastName, username, assistanceOffered } = this.state;
-
-    // Create user data object
-    const userData = {
-      firstName,
-      lastName,
-      username,
-      assistanceOffered,
+  const handleProfileSubmit = (e) => {
+    e.preventDefault();
+    
+    const userProfile = {
+      firstName: state.firstName,
+      lastName: state.lastName,
+      username: state.username,
+      assistanceOffered: state.assistanceOffered,
     };
 
-    // Call the sendUserData function passed as a prop
-    this.props.sendUserData(userData);
+    addUserProfile(userProfile);
+    console.log('Profile after saving:', userProfile);
   };
 
-  render() {
-    const { firstName, lastName, username, assistanceOffered } = this.state;
+  const { firstName, lastName, username, assistanceOffered } = state;
 
-    return (
-      <div>
-        <h2>User Profile</h2>
-        <form onSubmit={this.handleProfileSubmit}>
-          {/* ... (your input fields) */}
-          <button onClick={this.handleProfileSubmit}>Save Profile</button>
-        </form>
-      </div>
-    );
-  }
+  return (
+    <div>
+      <h2>User Profile</h2>
+      <form onSubmit={handleProfileSubmit}>
+        <label>
+          First Name:
+          <input
+            type="text"
+            name="firstName"
+            value={firstName}
+            onChange={handleInputChange}
+          />
+        </label>
+
+        <label>
+          Last Name:
+          <input
+            type="text"
+            name="lastName"
+            value={lastName}
+            onChange={handleInputChange}
+          />
+        </label>
+
+        <label>
+          Username:
+          <input
+            type="text"
+            name="username"
+            value={username}
+            onChange={handleInputChange}
+          />
+        </label>
+
+        <div>
+          Assistance Offered:
+          <label>
+            Food
+            <input
+              type="checkbox"
+              name="assistanceOffered"
+              value="food"
+              checked={assistanceOffered.food}
+              onChange={handleInputChange}
+            />
+          </label>
+          <label>
+            Water
+            <input
+              type="checkbox"
+              name="assistanceOffered"
+              value="water"
+              checked={assistanceOffered.water}
+              onChange={handleInputChange}
+            />
+          </label>
+          <label>
+            Shelter
+            <input
+              type="checkbox"
+              name="assistanceOffered"
+              value="shelter"
+              checked={assistanceOffered.shelter}
+              onChange={handleInputChange}
+            />
+          </label>
+          <label>
+            Transportation
+            <input
+              type="checkbox"
+              name="assistanceOffered"
+              value="transportation"
+              checked={assistanceOffered.transportation}
+              onChange={handleInputChange}
+            />
+          </label>
+          <label>
+            Medical Aid
+            <input
+              type="checkbox"
+              name="assistanceOffered"
+              value="medicalAid"
+              checked={assistanceOffered.medicalAid}
+              onChange={handleInputChange}
+            />
+          </label>
+        </div>
+
+        <button
+          type="submit"
+          style={{
+            backgroundColor: '#3498db',
+            color: '#fff',
+            padding: '10px 20px',
+            border: 'none',
+            borderRadius: '5px',
+            cursor: 'pointer',
+            fontFamily: 'Space Mono',
+            fontWeight: 700,
+            marginBottom: '10px',
+          }}
+        >
+          Save Profile
+        </button>
+      </form>
+    </div>
+  );
 }
 
 export default UserProfile;
