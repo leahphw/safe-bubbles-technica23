@@ -1,5 +1,5 @@
-import { useState, useMemo } from "react";
-import { GoogleMap, useLoadScript, Marker } from "@react-google-maps/api";
+import { useState, useMemo, useEffect } from "react";
+import { GoogleMap, useLoadScript, Marker, InfoWindow } from "@react-google-maps/api";
 import usePlacesAutocomplete, {
     getGeocode,
     getLatLng,
@@ -14,15 +14,35 @@ import {
 import "@reach/combobox/styles.css";
 
 export default function MapView() {
-    const center = useMemo(() => ({ lat: 43.45, lng: -80.49 }), []);
+    const [map, setMap] = useState(null);
+    const [center, setCenter] = useState({ lat: 43.45, lng: -80.49 });
     const [selected, setSelected] = useState(null);
+    const [zoom, setZoom] = useState(10);
+    const [markerPositions, setMarkerPositions] = useState([]); // Store marker positions
+    const [userProfiles, setUserProfiles] = useState([]); // Store user data
 
-    const { isLoaded } = useLoadScript({
+    const { isLoaded, loadError } = useLoadScript({
         googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
         libraries: ["places"],
     });
 
-    if (!isLoaded) return <div>Loading...</div>;
+    // Function to receive user data from UserProfile component
+    const receiveUserData = (userData) => {
+        // Add the user data to the list of user profiles
+        setUserProfiles([...userProfiles, userData]);
+    };
+
+    useEffect(() => {
+        if (!isLoaded) return;
+
+        if (window.google && map) {
+            const latlngbounds = new window.google.maps.LatLngBounds();
+            markerPositions.forEach((position) => {
+                latlngbounds.extend(position);
+            });
+            map.fitBounds(latlngbounds);
+        }
+    }, [isLoaded, map, markerPositions]);
 
     const PlacesAutocomplete = ({ setSelected }) => {
         const {
@@ -34,12 +54,15 @@ export default function MapView() {
         } = usePlacesAutocomplete();
 
         const handleSelect = async (address) => {
-            setValue(address, false);
-            clearSuggestions();
-
             const results = await getGeocode({ address });
             const { lat, lng } = await getLatLng(results[0]);
             setSelected({ lat, lng });
+
+            // Add the selected location to markerPositions
+            setMarkerPositions([...markerPositions, { lat, lng }]);
+            // Trigger a re-render to update the map with the new marker
+            setCenter({ lat, lng });
+            setZoom(15);
         };
 
         return (
@@ -68,13 +91,38 @@ export default function MapView() {
             <div className="places-container">
                 <PlacesAutocomplete setSelected={setSelected} />
             </div>
-
+    
             <GoogleMap
-                zoom={10}
+                zoom={zoom}
                 center={center}
+                mapContainerStyle={{ height: "400px", width: "100%" }}
                 mapContainerClassName="map-container"
             >
-                {selected && <Marker position={selected} />}
+                {markerPositions.map((position, index) => (
+                    <Marker key={index} position={position} />
+                ))}
+    
+                {userProfiles.map((profile, index) => (
+                    <Marker
+                        key={index}
+                        position={{ lat: profile.lat, lng: profile.lng }}
+                        onClick={() => setSelected(profile)}
+                    />
+                ))}
+                
+                {selected && (
+                    <InfoWindow
+                        position={{ lat: selected.lat, lng: selected.lng }}
+                        onCloseClick={() => setSelected(null)}
+                    >
+                        <div>
+                            <h2>{selected.username}</h2>
+                            <p>First Name: {selected.firstName}</p>
+                            <p>Last Name: {selected.lastName}</p>
+                            {/* Display assistanceOffered details here */}
+                        </div>
+                    </InfoWindow>
+                )}
             </GoogleMap>
         </>
     );

@@ -7,7 +7,6 @@ class UserProfile extends Component {
       firstName: '',
       lastName: '',
       username: '',
-      location: '',
       assistanceOffered: {
         food: false,
         water: false,
@@ -26,18 +25,22 @@ class UserProfile extends Component {
   };
 
   handleProfileSubmit = () => {
-    // Handle the submission of the user profile data
-    // You can access the data in this.state to send it to your backend
-    const { firstName, lastName, username, location, assistanceOffered } = this.state;
-    console.log('First Name:', firstName);
-    console.log('Last Name:', lastName);
-    console.log('Username:', username);
-    console.log('Location:', location);
-    console.log('Assistance Offered:', assistanceOffered);
+    const { firstName, lastName, username, assistanceOffered } = this.state;
+
+    // You can send this data to the MapView component
+    const userData = {
+      firstName,
+      lastName,
+      username,
+      assistanceOffered,
+    };
+
+    // Call a function to send userData to the MapView component
+    this.props.sendUserData(userData);
   };
 
   render() {
-    const { firstName, lastName, username, location, assistanceOffered } = this.state;
+    const { firstName, lastName, username, assistanceOffered } = this.state;
 
     return (
       <div>
@@ -69,16 +72,6 @@ class UserProfile extends Component {
               type="text"
               name="username"
               value={username}
-              onChange={this.handleInputChange}
-            />
-          </label>
-          <br />
-          <label>
-            Location:
-            <input
-              type="text"
-              name="location"
-              value={location}
               onChange={this.handleInputChange}
             />
           </label>
@@ -143,7 +136,7 @@ class UserProfile extends Component {
             </div>
           </label>
           <br />
-          <button type="submit">Save Profile</button>
+          <button onClick={this.handleProfileSubmit}>Save Profzle</button>
         </form>
       </div>
     );
