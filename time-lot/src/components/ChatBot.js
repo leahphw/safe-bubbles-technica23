@@ -78,7 +78,7 @@ function Chatbot() {
         value={userInput}
         onChange={handleUserInput}
         style={{
-          backgroundColor: '#3498db',
+          backgroundColor: '#D6EFFF',
           color: '#fff',
           padding: '10px 20px',
           border: 'none',
@@ -93,7 +93,7 @@ function Chatbot() {
       <button
         onClick={handleSendMessage}
         style={{
-          backgroundColor: '#3498db',
+          backgroundColor: '#77B6EA',
           color: '#fff',
           padding: '10px 20px',
           border: 'none',

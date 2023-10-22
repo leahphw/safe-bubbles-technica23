@@ -85,9 +85,9 @@ export default function MapView() {
                     onChange={(e) => setValue(e.target.value)}
                     disabled={!ready}
                     className="combobox-input"
-                    placeholder="Search an address"
+                    placeholder="search an address"
                     style={{
-                        backgroundColor: '#3498db',
+                        backgroundColor: '#D6EFFF   ',
                         color: '#fff',
                         padding: '10px 20px',
                         border: 'none',

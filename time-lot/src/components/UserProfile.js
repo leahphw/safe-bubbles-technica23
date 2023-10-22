@@ -15,7 +15,7 @@ const initialFormState = {
 };
 
 const fieldStyle = {
-  backgroundColor: '#3498db',
+  backgroundColor: '#D6EFFF',
   color: '#fff',
   padding: '10px 10px',
   border: 'none',
@@ -61,10 +61,10 @@ function UserProfile() {
 
   return (
     <div>
-      <h2>User Profile</h2>
+      <h2>user profile</h2>
       <form onSubmit={handleProfileSubmit}>
         <label>
-          First Name:
+          first name:
           <input
             type="text"
             name="firstName"
@@ -75,7 +75,7 @@ function UserProfile() {
         </label>
 
         <label>
-          Last Name:
+          last name:
           <input
             type="text"
             name="lastName"
@@ -86,7 +86,7 @@ function UserProfile() {
         </label>
 
         <label>
-          Username:
+          username:
           <input
             type="text"
             name="username"
@@ -97,9 +97,9 @@ function UserProfile() {
         </label>
 
         <div>
-          <h3>Assistance Offered:</h3>
+          <h3>assistance needed:</h3>
           <label>
-            Food
+            food
             <input
               type="checkbox"
               name="assistanceOffered"
@@ -110,7 +110,7 @@ function UserProfile() {
             />
           </label>
           <label>
-            Water
+            water
             <input
               type="checkbox"
               name="assistanceOffered"
@@ -121,7 +121,7 @@ function UserProfile() {
             />
           </label>
           <label>
-            Shelter
+            shelter
             <input
               type="checkbox"
               name="assistanceOffered"
@@ -132,7 +132,7 @@ function UserProfile() {
             />
           </label>
           <label>
-            Transportation
+            transportation
             <input
               type="checkbox"
               name="assistanceOffered"
@@ -143,7 +143,7 @@ function UserProfile() {
             />
           </label>
           <label>
-            Medical Aid
+            medical aid
             <input
               type="checkbox"
               name="assistanceOffered"
@@ -158,7 +158,7 @@ function UserProfile() {
         <button
           type="submit"
           style={{
-            backgroundColor: '#3498db',
+            backgroundColor: '#77B6EA',
             color: '#fff',
             padding: '10px 20px',
             border: 'none',
@@ -169,7 +169,7 @@ function UserProfile() {
             margin: '10px',
           }}
         >
-          Save Profile
+          save profile
         </button>
       </form>
     </div>

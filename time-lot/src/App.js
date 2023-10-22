@@ -8,11 +8,11 @@ function App() {
   return (
     <UserProvider>
       <div className="App">
-        <h1>Neighbor Connect</h1>
+        <h1>safe bubbles</h1>
         <UserProfile />
-        <h2>Locate your area</h2>
+        <h2>locate your area</h2>
         <MapView />
-        <h2>Chat with an AI Assistant!</h2>
+        <h2>chat with an AI assistant!</h2>
         <ChatBot />
       </div>
     </UserProvider>
