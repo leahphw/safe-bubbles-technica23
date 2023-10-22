@@ -1,33 +1,81 @@
-import React from "react";
+import { useState, useMemo } from "react";
 import { GoogleMap, useLoadScript, Marker } from "@react-google-maps/api";
+import usePlacesAutocomplete, {
+    getGeocode,
+    getLatLng,
+} from "use-places-autocomplete";
+import {
+    Combobox,
+    ComboboxInput,
+    ComboboxPopover,
+    ComboboxList,
+    ComboboxOption,
+} from "@reach/combobox";
+import "@reach/combobox/styles.css";
 
 export default function MapView() {
+    const center = useMemo(() => ({ lat: 43.45, lng: -80.49 }), []);
+    const [selected, setSelected] = useState(null);
+
     const { isLoaded } = useLoadScript({
-        googleMapsApiKey: "AIzaSyB_cM8VABwDeong2IWTyedphnrShWG-ZtE"
+        googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
+        libraries: ["places"],
     });
 
-    if (!isLoaded) {
-        return <div>...Loading...</div>;
-    }
+    if (!isLoaded) return <div>Loading...</div>;
+
+    const PlacesAutocomplete = ({ setSelected }) => {
+        const {
+            ready,
+            value,
+            setValue,
+            suggestions: { status, data },
+            clearSuggestions,
+        } = usePlacesAutocomplete();
+
+        const handleSelect = async (address) => {
+            setValue(address, false);
+            clearSuggestions();
+
+            const results = await getGeocode({ address });
+            const { lat, lng } = await getLatLng(results[0]);
+            setSelected({ lat, lng });
+        };
+
+        return (
+            <Combobox onSelect={handleSelect}>
+                <ComboboxInput
+                    value={value}
+                    onChange={(e) => setValue(e.target.value)}
+                    disabled={!ready}
+                    className="combobox-input"
+                    placeholder="Search an address"
+                />
+                <ComboboxPopover>
+                    <ComboboxList>
+                        {status === "OK" &&
+                            data.map(({ place_id, description }) => (
+                                <ComboboxOption key={place_id} value={description} />
+                            ))}
+                    </ComboboxList>
+                </ComboboxPopover>
+            </Combobox>
+        );
+    };
 
     return (
-        <div>
-            <Map />
-        </div>
-    );
-}
+        <>
+            <div className="places-container">
+                <PlacesAutocomplete setSelected={setSelected} />
+            </div>
 
-function Map() {
-    return (
-        <div>
             <GoogleMap
-                id="example-map"
-                mapContainerStyle={{ height: "400px", width: "100%" }}
                 zoom={10}
-                center={{ lat: 0, lng: 0 }}
+                center={center}
+                mapContainerClassName="map-container"
             >
-                <Marker position={{ lat: 0, lng: 0 }} />
+                {selected && <Marker position={selected} />}
             </GoogleMap>
-        </div>
+        </>
     );
 }
