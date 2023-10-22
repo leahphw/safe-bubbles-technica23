@@ -20,6 +20,7 @@ export default function MapView() {
     const [zoom, setZoom] = useState(10);
     const [markerPositions, setMarkerPositions] = useState([]); // Store marker positions
     const [userProfiles, setUserProfiles] = useState([]); // Store user data
+    const [selectedProfile, setSelectedProfile] = useState(null);
 
     const { isLoaded, loadError } = useLoadScript({
         googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
@@ -30,6 +31,7 @@ export default function MapView() {
     const receiveUserData = (userData) => {
         // Add the user data to the list of user profiles
         setUserProfiles([...userProfiles, userData]);
+        setSelectedProfile(userData);
     };
 
     useEffect(() => {
@@ -91,7 +93,7 @@ export default function MapView() {
             <div className="places-container">
                 <PlacesAutocomplete setSelected={setSelected} />
             </div>
-    
+
             <GoogleMap
                 zoom={zoom}
                 center={center}
@@ -101,7 +103,7 @@ export default function MapView() {
                 {markerPositions.map((position, index) => (
                     <Marker key={index} position={position} />
                 ))}
-    
+
                 {userProfiles.map((profile, index) => (
                     <Marker
                         key={index}
@@ -109,16 +111,16 @@ export default function MapView() {
                         onClick={() => setSelected(profile)}
                     />
                 ))}
-                
+
                 {selected && (
                     <InfoWindow
                         position={{ lat: selected.lat, lng: selected.lng }}
                         onCloseClick={() => setSelected(null)}
                     >
                         <div>
-                            <h2>{selected.username}</h2>
-                            <p>First Name: {selected.firstName}</p>
-                            <p>Last Name: {selected.lastName}</p>
+                            <h2>{selectedProfile.username}</h2>
+                            <p>First Name: {selectedProfile.firstName}</p>
+                            <p>Last Name: {selectedProfile.lastName}</p>
                             {/* Display assistanceOffered details here */}
                         </div>
                     </InfoWindow>
