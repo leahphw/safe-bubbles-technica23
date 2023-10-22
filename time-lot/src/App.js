@@ -6,9 +6,9 @@ import ChatBot from './components/ChatBot'
 function App() {
   return (
     <div className="App">
-      <h1>Neighbor Conect</h1>
+      <h1>Neighbor Connect</h1>
       <UserProfile />
-      <MapView />
+      
       <ChatBot />
     </div>
   );

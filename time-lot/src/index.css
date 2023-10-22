@@ -1,3 +1,9 @@
+* {
+  font-family: 'Space Mono', monospace; /* Apply the Google Font */
+  background-color: #add8e6; /* Baby Blue background color */
+  color: #fff; /* Black text color */
+}
+
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',

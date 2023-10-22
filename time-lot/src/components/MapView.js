@@ -101,7 +101,15 @@ export default function MapView() {
                 mapContainerClassName="map-container"
             >
                 {markerPositions.map((position, index) => (
-                    <Marker key={index} position={position} />
+                    <Marker
+                        key={index}
+                        position={position}
+                        icon={{
+                            url: "../../assets/img/carz.png",
+                            anchor: new window.google.maps.Point(10, 10),
+                            scaledSize: new window.google.maps.Size(20, 20)
+                        }}
+                    />
                 ))}
 
                 {userProfiles.map((profile, index) => (
@@ -118,9 +126,9 @@ export default function MapView() {
                         onCloseClick={() => setSelected(null)}
                     >
                         <div>
-                            <h2>{selectedProfile.username}</h2>
-                            <p>First Name: {selectedProfile.firstName}</p>
-                            <p>Last Name: {selectedProfile.lastName}</p>
+                            <h2>{selected.username}</h2>
+                            <p>First Name: {selected.firstName}</p>
+                            <p>Last Name: {selected.lastName}</p>
                             {/* Display assistanceOffered details here */}
                         </div>
                     </InfoWindow>
