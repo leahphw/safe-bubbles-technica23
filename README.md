@@ -1,4 +1,4 @@
-# App Idea: "NeighborConnect" - Community Assistance Locator
+# App Idea: Safe Bubbles - Community Assistance Locator
 
 ![app image](app-demo.png)
 
