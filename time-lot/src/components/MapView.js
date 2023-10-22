@@ -1,23 +1,23 @@
-import { useState, useEffect } from "react";
-import { useUserContext } from "./UserContext";
-import { GoogleMap, useLoadScript, Marker, InfoWindow } from "@react-google-maps/api";
+import React, { useState, useEffect } from 'react';
+import { useUserContext } from './UserContext';
+import { GoogleMap, useLoadScript, Marker, InfoWindow } from '@react-google-maps/api';
 import usePlacesAutocomplete, {
     getGeocode,
     getLatLng,
-} from "use-places-autocomplete";
+} from 'use-places-autocomplete';
 import {
     Combobox,
     ComboboxInput,
     ComboboxPopover,
     ComboboxList,
     ComboboxOption,
-} from "@reach/combobox";
-import "@reach/combobox/styles.css";
+} from '@reach/combobox';
+import '@reach/combobox/styles.css';
 
-const libraries = ["places"];
+const libraries = ['places'];
 
 export default function MapView() {
-    const { userProfiles } = useUserContext();
+    const { userProfiles, addUserProfile } = useUserContext(); // Added addUserProfile
     const [map, setMap] = useState(null);
     const [center, setCenter] = useState({ lat: 43.45, lng: -80.49 });
     const [selected, setSelected] = useState(null);
@@ -44,6 +44,8 @@ export default function MapView() {
         }
     }, [map, markerPositions]);
 
+    console.log(selectedProfile);
+
     const PlacesAutocomplete = ({ setSelected }) => {
         const {
             ready,
@@ -56,12 +58,25 @@ export default function MapView() {
         const handleSelect = async (address) => {
             const results = await getGeocode({ address });
             const { lat, lng } = await getLatLng(results[0]);
-            setSelected({ lat, lng });
-
-            setMarkerPositions([...markerPositions, { lat, lng }]);
+            const selectedProfile = userProfiles.find((profile) => {
+              return profile.lat === lat && profile.lng === lng;
+            });
+          
+            if (selectedProfile) {
+              setSelectedProfile(selectedProfile);
+            }
+          
+            addMarkerWithProfile({ lat, lng, profile: selectedProfile });
+          
             setCenter({ lat, lng });
             setZoom(10);
-        };
+          };
+          
+          const addMarkerWithProfile = ({ lat, lng, profile }) => {
+            const newMarker = { lat, lng, profile };
+            setMarkerPositions([...markerPositions, newMarker]);
+            setSelectedProfile(profile);
+          };
 
         return (
             <Combobox onSelect={handleSelect}>
@@ -83,7 +98,8 @@ export default function MapView() {
                         marginBottom: '10px',
                     }}
                 />
-                <ComboboxPopover style={{
+                <ComboboxPopover
+                    style={{
                         color: '#000',
                         padding: '10px 20px',
                         border: 'none',
@@ -91,10 +107,11 @@ export default function MapView() {
                         cursor: 'pointer',
                         fontFamily: 'Space Mono, monospace',
                         fontWeight: 700,
-                        alignContent: "left",
-                    }}>
+                        alignContent: 'left',
+                    }}
+                >
                     <ComboboxList>
-                        {status === "OK" &&
+                        {status === 'OK' &&
                             data.map(({ place_id, description }) => (
                                 <ComboboxOption key={place_id} value={description} />
                             ))}
@@ -114,7 +131,7 @@ export default function MapView() {
                 <GoogleMap
                     zoom={zoom}
                     center={center}
-                    mapContainerStyle={{ height: "400px", width: "100%" }}
+                    mapContainerStyle={{ height: '400px', width: '100%' }}
                     mapContainerClassName="map-container"
                     onLoad={handleMapLoad}
                 >
@@ -122,11 +139,6 @@ export default function MapView() {
                         <Marker
                             key={index}
                             position={position}
-                            icon={{
-                                url: "../../assets/img/carz.png",
-                                anchor: { x: 10, y: 10 },
-                                scaledSize: { width: 20, height: 20 }
-                            }}
                         />
                     ))}
 

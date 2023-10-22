@@ -1,6 +1,19 @@
 import React, { useState } from 'react';
 import { useUserContext } from './UserContext';
 
+const initialFormState = {
+  firstName: '',
+  lastName: '',
+  username: '',
+  assistanceOffered: {
+    food: false,
+    water: false,
+    shelter: false,
+    transportation: false,
+    medicalAid: false,
+  },
+};
+
 const fieldStyle = {
   backgroundColor: '#3498db',
   color: '#fff',
@@ -12,20 +25,13 @@ const fieldStyle = {
   margin: '10px',
 };
 
-function UserProfile() {
-  const [state, setState] = useState({
-    firstName: '',
-    lastName: '',
-    username: '',
-    assistanceOffered: {
-      food: false,
-      water: false,
-      shelter: false,
-      transportation: false,
-      medicalAid: false,
-    },
-  });
+const boxStyle = {
+  border: "none",
+  margin: "10px",
+}
 
+function UserProfile() {
+  const [state, setState] = useState(initialFormState);
   const { addUserProfile } = useUserContext();
 
   const handleInputChange = (e) => {
@@ -47,6 +53,7 @@ function UserProfile() {
     };
 
     addUserProfile(userProfile);
+    setState(initialFormState);
     console.log('Profile after saving:', userProfile);
   };
 
@@ -90,7 +97,7 @@ function UserProfile() {
         </label>
 
         <div>
-          Assistance Offered:
+          <h3>Assistance Offered:</h3>
           <label>
             Food
             <input
@@ -99,7 +106,7 @@ function UserProfile() {
               value="food"
               checked={assistanceOffered.food}
               onChange={handleInputChange}
-              style={fieldStyle}
+              style={boxStyle}
             />
           </label>
           <label>
@@ -110,6 +117,7 @@ function UserProfile() {
               value="water"
               checked={assistanceOffered.water}
               onChange={handleInputChange}
+              style={boxStyle}
             />
           </label>
           <label>
@@ -120,6 +128,7 @@ function UserProfile() {
               value="shelter"
               checked={assistanceOffered.shelter}
               onChange={handleInputChange}
+              style={boxStyle}
             />
           </label>
           <label>
@@ -130,6 +139,7 @@ function UserProfile() {
               value="transportation"
               checked={assistanceOffered.transportation}
               onChange={handleInputChange}
+              style={boxStyle}
             />
           </label>
           <label>
@@ -140,6 +150,7 @@ function UserProfile() {
               value="medicalAid"
               checked={assistanceOffered.medicalAid}
               onChange={handleInputChange}
+              style={boxStyle}
             />
           </label>
         </div>
@@ -155,7 +166,7 @@ function UserProfile() {
             cursor: 'pointer',
             fontFamily: 'Space Mono',
             fontWeight: 700,
-            marginBottom: '10px',
+            margin: '10px',
           }}
         >
           Save Profile
