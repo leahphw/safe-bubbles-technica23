@@ -60,7 +60,7 @@ export default function MapView() {
 
             setMarkerPositions([...markerPositions, { lat, lng }]);
             setCenter({ lat, lng });
-            setZoom(15);
+            setZoom(10);
         };
 
         return (
@@ -81,9 +81,18 @@ export default function MapView() {
                         fontFamily: 'Space Mono, monospace',
                         fontWeight: 700,
                         marginBottom: '10px',
-                      }}
+                    }}
                 />
-                <ComboboxPopover>
+                <ComboboxPopover style={{
+                        color: '#000',
+                        padding: '10px 20px',
+                        border: 'none',
+                        borderRadius: '5px',
+                        cursor: 'pointer',
+                        fontFamily: 'Space Mono, monospace',
+                        fontWeight: 700,
+                        alignContent: "left",
+                    }}>
                     <ComboboxList>
                         {status === "OK" &&
                             data.map(({ place_id, description }) => (
@@ -125,19 +134,19 @@ export default function MapView() {
                         <Marker
                             key={index}
                             position={{ lat: profile.lat, lng: profile.lng }}
-                            onClick={() => setSelected(profile)}
+                            onClick={() => setSelectedProfile(profile)}
                         />
                     ))}
 
-                    {selected && (
+                    {selectedProfile && (
                         <InfoWindow
-                            position={{ lat: selected.lat, lng: selected.lng }}
-                            onCloseClick={() => setSelected(null)}
+                            position={{ lat: selectedProfile.lat, lng: selectedProfile.lng }}
+                            onCloseClick={() => setSelectedProfile(null)}
                         >
                             <div>
-                                <h2>{selected.username}</h2>
-                                <p>First Name: {selected.firstName}</p>
-                                <p>Last Name: {selected.lastName}</p>
+                                <h2>{selectedProfile.username}</h2>
+                                <p>First Name: {selectedProfile.firstName}</p>
+                                <p>Last Name: {selectedProfile.lastName}</p>
                                 {/* Display assistanceOffered details here */}
                             </div>
                         </InfoWindow>

@@ -10,7 +10,10 @@ function App() {
       <div className="App">
         <h1>Neighbor Connect</h1>
         <UserProfile />
+        <h2>Locate your area</h2>
         <MapView />
+        <h2>Chat with an AI Assistant!</h2>
+        <ChatBot />
       </div>
     </UserProvider>
   );

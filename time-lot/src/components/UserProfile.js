@@ -1,6 +1,17 @@
 import React, { useState } from 'react';
 import { useUserContext } from './UserContext';
 
+const fieldStyle = {
+  backgroundColor: '#3498db',
+  color: '#fff',
+  padding: '10px 10px',
+  border: 'none',
+  borderRadius: '5px',
+  fontFamily: 'Space Mono',
+  fontWeight: 700,
+  margin: '10px',
+};
+
 function UserProfile() {
   const [state, setState] = useState({
     firstName: '',
@@ -27,7 +38,7 @@ function UserProfile() {
 
   const handleProfileSubmit = (e) => {
     e.preventDefault();
-    
+
     const userProfile = {
       firstName: state.firstName,
       lastName: state.lastName,
@@ -52,6 +63,7 @@ function UserProfile() {
             name="firstName"
             value={firstName}
             onChange={handleInputChange}
+            style={fieldStyle}
           />
         </label>
 
@@ -62,6 +74,7 @@ function UserProfile() {
             name="lastName"
             value={lastName}
             onChange={handleInputChange}
+            style={fieldStyle}
           />
         </label>
 
@@ -72,6 +85,7 @@ function UserProfile() {
             name="username"
             value={username}
             onChange={handleInputChange}
+            style={fieldStyle}
           />
         </label>
 
@@ -85,6 +99,7 @@ function UserProfile() {
               value="food"
               checked={assistanceOffered.food}
               onChange={handleInputChange}
+              style={fieldStyle}
             />
           </label>
           <label>
