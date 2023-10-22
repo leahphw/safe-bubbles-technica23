@@ -1,12 +1,14 @@
 # App Idea: "NeighborConnect" - Community Assistance Locator
 
+![app image](app-demo.png)
+
 ## Problem Statement: 
 
 During times of crisis, such as natural disasters or public health emergencies, communities often need quick access to essential resources and assistance. Many people want to help their neighbors but lack a streamlined way to offer or request assistance.
 
 ## App Concept: 
 
-NeighborConnect is a web app (potentially mobile) designed to facilitate community support during emergencies and times of need.
+Safe Bubbles is a web app (potentially mobile) designed to facilitate community support during emergencies and times of need.
 
 ## Features:
 
@@ -15,6 +17,10 @@ NeighborConnect is a web app (potentially mobile) designed to facilitate communi
 - Request Assistance: Individuals in need can create requests for specific types of assistance. For instance, someone can request water, a place to stay, or transportation to a nearby shelter.
 
 - View Map: A map displays user profiles, requests, and available resources. Users can see who needs help and who can provide it within their vicinity.
+
+- AI Assitant: A chatbox connected to AI for user assistance
+
+## To be implemented:
 
 - Real-time Notifications: Users receive real-time push notifications when someone nearby needs assistance or offers help.
 
@@ -30,8 +36,8 @@ Encourages a sense of community and mutual support during difficult times.
 
 ## Tech Stack:
 
-- Node.js and Express.js for the backend API.
-- Firebase for real-time data and messaging.
+- Node.js for the backend API.
+- Netfily for deploying.
 - Google Maps API for location and mapping features.
 
 ## Development Tasks:
