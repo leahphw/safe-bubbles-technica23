@@ -1,7 +1,5 @@
 # App Idea: Safe Bubbles - Community Assistance Locator
 
-![app image](app-demo.png)
-
 ## Problem Statement: 
 
 During times of crisis, such as natural disasters or public health emergencies, communities often need quick access to essential resources and assistance. Many people want to help their neighbors but lack a streamlined way to offer or request assistance.
@@ -48,3 +46,5 @@ Encourages a sense of community and mutual support during difficult times.
 - Set up real-time notifications and messaging.
 - Develop a simple user verification system.
 - Test and ensure a user-friendly interface.
+
+![app image](app-demo.png)
